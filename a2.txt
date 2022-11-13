@@ -1,6 +1,7 @@
 
 #a. Import the neccessary package
 import tensorflow as tf
+from tansorflow impor keras
 import pandas as pd
 
 
@@ -67,7 +68,7 @@ history=model.fit(x_train, y_train,validation_data=(x_test,y_test), epochs=10)
 
 #evaluate the network
 #means calculating loss and accuracy on testing data
-test_loss, test_acc=model.evaluate(x_test, y_test, verbose=0)
+test_loss, test_acc=model.evaluate(x_test, y_test)
 print("Loss=", test_loss)
 print("Accuracy=", test_acc)
 
