@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
-from tensorflow import keras
 import tensorflow as tf
+from tensorflow import keras
 import matplotlib.pyplot as plt
 from keras.models import Model
 from sklearn.metrics import accuracy_score, precision_score, recall_score
@@ -34,9 +34,9 @@ plt.imshow(x_train[6])
 
 # size of the latent spaces is vector
 latent_dim = 64     
-class Autoencoder(Model):
+class Anomalydetector(Model):
   def __init__(self, latent_dim):
-    super(Autoencoder, self).__init__()     #function
+    super(Anomalydetector, self).__init__()     #function
     self.latent_dim = latent_dim   
     
     self.encoder = keras.Sequential([
@@ -53,7 +53,7 @@ class Autoencoder(Model):
     decoded = self.decoder(encoded)
     return decoded
 
-autoencoder = Autoencoder(latent_dim)
+autoencoder = Anomalydetector(latent_dim)
 
 
 
@@ -80,8 +80,9 @@ plt.imshow(d_imgs[1])
 
 
 
-reconstructions = autoencoder.predict(x_train)
-train_loss = tf.keras.losses.mae(reconstructions, x_train)
+train_loss=autoencoder.evaluate(x_train,x_train)
+
+
 threshold = np.mean(train_loss) + np.std(train_loss)
 print("Threshold =", threshold)
 
