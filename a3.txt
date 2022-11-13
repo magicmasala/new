@@ -23,13 +23,15 @@ plt.matshow(x_train[1])
 #create CNN model 
 model = tf.keras.Sequential([
   Conv2D(filters=32,kernel_size=(3, 3), activation='relu', input_shape=(32,32, 3)),
-  MaxPool2D(),
-  Conv2D(filters=32,kernel_size=(3, 3), activation='relu'),
-  MaxPool2D(),
+  MaxPool2D((2,2)),
+  Conv2D(filters=64,kernel_size=(3, 3), activation='relu'),
+  MaxPool2D((2,2)),
   Flatten(),
-  Dense(100, activation='relu'),
+  Dense(64, activation='relu'),
   Dense(10, activation='softmax')
 ])
+model.summary()
+
 
 model.compile(loss='sparse_categorical_crossentropy',
                  optimizer='adam',
@@ -37,8 +39,13 @@ model.compile(loss='sparse_categorical_crossentropy',
 
 
 
-history = model.fit(x_train,y_train,validation_data=(x_test,y_test),epochs=5 )
+history = model.fit(x_train,y_train,validation_data=(x_test,y_test),epochs=10 )
 
+
+
+loss,accuracy=model.evaluate(x_test,y_test)
+print("loss=",loss)
+print("accuracy=",accuracy)
 
 
 
