@@ -1,0 +1,88 @@
+import pandas as pd
+import numpy as np
+from tensorflow import keras
+import tensorflow as tf
+import matplotlib.pyplot as plt
+from keras.models import Model
+from sklearn.metrics import accuracy_score, precision_score, recall_score
+
+
+
+
+#load the data set and split in training and testing
+(x_train,y_train),(x_test,y_test)=keras.datasets.fashion_mnist.load_data()
+
+
+
+
+#normalization of the data
+x_train=x_train/255.
+x_test=x_test/255.
+
+
+
+
+x_train.shape,x_test.shape
+
+
+
+
+plt.imshow(x_train[6])
+
+
+
+
+# size of the latent spaces is vector
+latent_dim = 64     
+class Autoencoder(Model):
+  def __init__(self, latent_dim):
+    super(Autoencoder, self).__init__()     #function
+    self.latent_dim = latent_dim   
+    
+    self.encoder = keras.Sequential([
+      keras.layers.Flatten(),
+      keras.layers.Dense(latent_dim, activation='relu'),
+    ])
+    self.decoder = keras.Sequential([
+      keras.layers.Dense(784, activation='sigmoid'),
+      keras.layers.Reshape((28, 28))
+    ])
+
+  def call(self, x):
+    encoded = self.encoder(x)
+    decoded = self.decoder(encoded)
+    return decoded
+
+autoencoder = Autoencoder(latent_dim)
+
+
+
+
+#compile the model
+autoencoder.compile(optimizer='adam',
+                    loss = 'mse')   #mean squared error
+                   
+                   
+#train
+autoencoder.fit(x_train, x_train,validation_data=(x_test, x_test),epochs=10)
+
+
+
+
+e_imgs = autoencoder.encoder(x_test).numpy() #encoded image convert into array
+d_imgs = autoencoder.decoder(e_imgs).numpy()
+
+plt.imshow(x_test[1])
+
+
+
+plt.imshow(d_imgs[1])
+
+
+
+reconstructions = autoencoder.predict(x_train)
+train_loss = tf.keras.losses.mae(reconstructions, x_train)
+threshold = np.mean(train_loss) + np.std(train_loss)
+print("Threshold =", threshold)
+
+

@@ -1,0 +1,80 @@
+
+#a. Import the neccessary package
+# from tensorflow import keras
+# import matplotlib.pyplot as plt
+# import numpy as np
+import tensorflow as tf
+import pandas as pd
+
+
+
+#b. Load the training and testing data
+# MNIST set is a large collection of handwritten digits. 
+mnist = tf.keras.datasets.mnist
+(x_train, y_train), (x_test, y_test) = mnist.load_data()
+
+
+
+
+
+#60000 data from data set is assigned to x_train
+# len(x_train)
+
+#10000 data from data set is assigned to x_test
+# len(x_test)
+
+# this shows the 2d array(28,28) 28 array with 28 values
+# x_train.shape
+
+# x_test.shape
+
+#array values of 2nd data
+# x_train[2]
+
+#we can change it by changing the argument
+# plt.matshow(x_train[2])
+
+
+
+
+
+
+
+#feature scaling
+x_train = x_train/255
+x_test = x_test/255
+
+
+
+
+#define the network architecture usig keras
+model = tf.keras.Sequential([
+    tf.keras.layers.Flatten(input_shape=(28,28)),
+    tf.keras.layers.Dense(128, activation='relu'),  #Fully connected layers
+    tf.keras.layers.Dense(10, activation='softmax')
+])
+model.summary()
+
+
+
+
+
+#train the model using SGD
+model.compile(optimizer='sgd',
+             loss='sparse_categorical_crossentropy',
+             metrics=['accuracy'])
+history=model.fit(x_train, y_train,validation_data=(x_test,y_test), epochs=10)
+
+
+
+
+#evaluate the network
+#means calculating loss and accuracy on testing data
+test_loss, test_acc=model.evaluate(x_test, y_test, verbose=0)
+print("Loss=", test_loss)
+print("Accuracy=", test_acc)
+
+
+
+#f. plot the training loss and accuracy
+pd.DataFrame(history.history).plot()
